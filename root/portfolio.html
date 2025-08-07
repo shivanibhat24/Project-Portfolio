@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shivani Bhat's Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        /* Custom styles for animations, since we're not using Framer Motion */
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .skill-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .skill-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            left: 0;
+            bottom: 0;
+            background-color: #1f2937;
+            transition: width 0.3s ease;
+        }
+
+        .dark .nav-link::after {
+            background-color: white;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Styling for the carousel buttons */
+        .carousel-button {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .carousel-button:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        /* Hide content that is not active in the carousel */
+        .carousel-item {
+            display: none;
+        }
+
+        .carousel-item.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-column {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-slate-950 text-gray-900 dark:text-gray-200 min-h-screen antialiased flex flex-col items-center font-sans">
+
+    <!-- JavaScript Data -->
+    <script>
+        const resumeData = {
+            name: 'Shivani Bhat',
+            professionalSummary: `Hey there! I'm Shivani, an engineering student who's absolutely obsessed with embedded systems and making cool stuff. My journey so far has been a blast—I’ve had the chance to work on some incredible team projects and even got to dabble in things like IoT and signal processing. While I'm still learning the ropes, I'm super eager to jump into an entry-level embedded systems engineering role and bring my passion to a team where I can grow and contribute.`,
+            contact: [
+                { label: 'Email', value: 'shivani.gbhat@gmail.com', url: 'mailto:shivani.gbhat@gmail.com', icon: '<path d="M2.003 5.884L10 9.882l-7.997 3.998A2 2 0 012 12V6a2 2 0 01.003-.116zM22 12V6a2 2 0 00-2-2H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2v-6zm-11.996-2.998a1 1 0 011.992 0L22 13v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2l9.996-5.998z" />' },
+                { label: 'GitHub', value: 'github.com/shivanibhat24', url: 'https://github.com/shivanibhat24', icon: '<path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.419 2.864 8.167 6.839 9.504.5.092.682-.218.682-.483 0-.237-.009-.867-.014-1.7-2.782.604-3.368-1.341-3.368-1.341-.454-1.154-1.108-1.464-1.108-1.464-.906-.618.069-.607.069-.607 1.004.07 1.532 1.03 1.532 1.03.89 1.529 2.34 1.087 2.91.83.091-.645.349-1.087.636-1.338-2.22-.25-4.555-1.11-4.555-4.93 0-1.087.387-1.979 1.02-2.671-.103-.252-.443-1.264.097-2.637 0 0 .83-.268 2.72 1.02.79-.22 1.62-.33 2.44-.33.82 0 1.65.11 2.44.33 1.89-1.288 2.719-1.02 2.719-1.02.54 1.373.2 2.385.1 2.637.633.692 1.019 1.584 1.019 2.671 0 3.829-2.338 4.678-4.562 4.928.358.309.678.919.678 1.854 0 1.338-.012 2.418-.012 2.744 0 .267.18.579.688.483C19.139 20.165 22 16.417 22 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd" />' },
+                { label: 'LinkedIn', value: 'linkedin.com/in/shivani-g-bhat', url: 'https://linkedin.com/in/shivani-g-bhat', icon: '<path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14zM8 9H5v12h3V9zM6.5 6.75A1.75 1.75 0 106.5 3a1.75 1.75 0 000 3.5zM19 12h-3v5.27a.73.73 0 01-.73.73H12V12h-3v9h3v-7a.73.73 0 01.73-.73h3.54a.73.73 0 01.73.73v7h3V12z" />' }
+            ],
+            education: [
+                { degree: 'B.Tech in Electronics and Telecommunication Engineering', school: 'Sardar Patel Institute of Technology, University of Mumbai', years: '2022-2026' },
+                { degree: 'Minor in Management Studies', school: 'SP Jain Institute of Management Research', years: '2024-2026' }
+            ],
+            experience: [
+                { title: 'Research Intern', company: 'Tata Institute of Fundamental Research', date: 'Jan 2025 - Jun 2025', location: 'Mumbai, India', description: ['Developed a Cosmic Muon Veto Detector using AMD Spartan 7 and Intel Altera Cyclone 4 (Microblaze and NIOS processors).', 'Implemented real-time data acquisition and processing using C, VHDL, and Python.'] },
+                { title: 'Content Intern', company: 'Smowcode', date: 'Jul 2024 - Sep 2024', location: 'Remote', description: ['Authored over 40 technical blogs on embedded systems, protocols, microelectronics, and IoT, achieving an average SEO score of 97.5%.', 'The content generated helped boost the company’s website traffic and establish thought leadership.'] }
+            ],
+            projects: [
+                { title: 'Can Satellite', year: '2023-2024', description: 'Led the electronics team for a multidisciplinary student satellite team. Integrated sensors, actuators, and power systems. Ranked 10th globally in the US Cansat Competition.' },
+                { title: 'Unmanned Ground Vehicle', year: '2023', description: 'Developed an autonomous ground robot for crop monitoring and spraying. Integrated GIS, SPI/I2C communication, and various sensors for navigation.' },
+                { title: 'Smart Guidance Spectacles', year: '2023', description: 'Developed a wearable assistive device using Python-based recognition, Bluetooth, and WebSocket programming. Designed an ergonomic 3D-printed casing for seamless usability.' },
+                { title: 'Anomaly Detection for Zero Day Exploits', year: '2024', description: 'Implemented an unsupervised deep learning pipeline for detecting zero-day exploits using VAE and clustering techniques. Successfully identified anomalous network behavior indicating previously unknown vulnerabilities.' }
+            ],
+            skills: {
+                'Core Languages': [
+                    { name: 'Embedded C', description: 'Proficient in developing firmware for microcontrollers and embedded systems.' },
+                    { name: 'Micropython', description: 'Experienced in writing concise Python code for resource-constrained devices.' },
+                    { name: 'Verilog', description: 'Designing and simulating digital circuits using Hardware Description Language.' },
+                    { name: 'SystemVerilog', description: 'Applying advanced hardware verification techniques for complex designs.' },
+                    { name: 'VHDL', description: 'Proficient in using VHDL for FPGA and CPLD programming.' },
+                    { name: 'CUDA', description: 'Accelerating parallel computing tasks on GPUs for high-performance applications.' },
+                ],
+                'Programming Languages': [
+                    { name: 'C', description: 'Writing efficient and performant code for various system-level tasks.' },
+                    { name: 'C++', description: 'Developing robust and scalable applications with object-oriented principles.' },
+                    { name: 'Java', description: 'Building cross-platform applications and server-side systems.' },
+                    { name: 'Python', description: 'Using Python for scripting, data analysis, and machine learning.' },
+                    { name: 'JavaScript', description: 'Creating interactive web interfaces and client-side logic.' },
+                    { name: 'TypeScript', description: 'Developing type-safe and maintainable JavaScript applications.' },
+                    { name: 'Go', description: 'Building high-concurrency and efficient backend services.' },
+                    { name: 'Rust', description: 'Writing safe, concurrent, and high-performance system-level code.' },
+                ],
+                'Scripting Languages': [
+                    { name: 'TCL', description: 'Utilizing TCL for tool control and automation tasks.' },
+                    { name: 'Tk', description: 'Building simple graphical user interfaces for desktop applications.' },
+                    { name: 'Bash', description: 'Automating system administration tasks and command-line operations.' },
+                    { name: 'Windows PowerShell Scripting', description: 'Automating administrative tasks on Windows systems.' },
+                ],
+                'Core Skills': [
+                    { name: 'Embedded Systems', description: 'Designing and implementing software for embedded hardware.' },
+                    { name: 'Computer Architecture', description: 'Understanding hardware design and system organization.' },
+                    { name: 'Soldering', description: 'Skilled in assembling and repairing electronic circuits.' },
+                    { name: 'Analog Circuit Design', description: 'Designing circuits for signal conditioning and power management.' },
+                    { name: 'Digital Circuit Design', description: 'Creating logical circuits for digital systems.' },
+                    { name: 'SOC Design', description: 'Designing complex System-on-Chip architectures.' },
+                    { name: 'FPGA Programming', description: 'Configuring Field-Programmable Gate Arrays for custom logic.' },
+                    { name: 'HLS Programming', description: 'Using High-Level Synthesis for hardware design automation.' },
+                    { name: 'PCB Design', description: 'Creating printed circuit board layouts for electronic devices.' },
+                    { name: 'Signal Processing', description: 'Analyzing and modifying signals from various sensors.' },
+                    { name: 'Firmware Development', description: 'Writing low-level software for hardware devices.' },
+                    { name: 'Computer Networking', description: 'Understanding network protocols and system connectivity.' },
+                ],
+                'Devices': [
+                    { name: 'STM32Fxxx ARM', description: 'Programming and using a family of 32-bit microcontrollers.' },
+                    { name: 'LPC 214x', description: 'Working with NXP’s ARM7-based microcontrollers.' },
+                    { name: 'ESP32-C3/S3/S2', description: 'Developing IoT solutions with these versatile Wi-Fi and Bluetooth chips.' },
+                    { name: 'ESP8266', description: 'Building low-cost IoT projects with this popular Wi-Fi module.' },
+                    { name: 'Raspberry Pi', description: 'Using single-board computers for various projects and automation.' },
+                    { name: 'PIC18F', description: 'Programming 8-bit microcontrollers from Microchip.' },
+                    { name: '8051', description: 'Developing with classic 8-bit microcontrollers.' },
+                    { name: '8085', description: 'Working with one of the foundational 8-bit microprocessors.' },
+                    { name: 'Teensy 4.1', description: 'Developing high-speed, compact embedded projects.' },
+                    { name: 'ATMega328p', description: 'The core microcontroller for Arduino, used in many hobby projects.' },
+                    { name: 'Arduino', description: 'Prototyping and building interactive electronics projects.' },
+                    { name: 'Spartan 7 FPGA', description: 'Programming Xilinx FPGAs for custom digital logic.' },
+                    { name: 'Altera Cyclone V FPGA', description: 'Working with Intel Altera FPGAs for digital design.' },
+                ],
+                'Simulation Software': [
+                    { name: 'Proteus', description: 'Simulating electronic circuits before physical implementation.' },
+                    { name: 'MATLAB', description: 'Using for numerical computing and data visualization.' },
+                    { name: 'LtSpice', description: 'Simulating analog electronic circuit behavior.' },
+                    { name: 'Scilab', description: 'Performing scientific computing and engineering simulations.' },
+                ],
+                'Frontend Development': [
+                    { name: 'HTML', description: 'Structuring content for web pages.' },
+                    { name: 'CSS', description: 'Styling and presenting web pages.' },
+                    { name: 'React', description: 'Building dynamic and modern user interfaces.' },
+                    { name: 'Flutter', description: 'Developing cross-platform mobile and web applications.' },
+                    { name: 'Next.js', description: 'Building server-side rendered React applications.' },
+                ],
+                'Backend Development': [
+                    { name: 'Express', description: 'Creating robust and scalable APIs with Node.js.' },
+                    { name: 'Node.js', description: 'Running JavaScript on the server for backend development.' },
+                    { name: 'Django', description: 'Building powerful web applications with Python.' },
+                ],
+                'Databases': [
+                    { name: 'MongoDB', description: 'Working with NoSQL, document-based databases.' },
+                    { name: 'PostgreSQL', description: 'Managing data with the powerful relational database system.' },
+                ],
+                'Cloud Platforms': [
+                    { name: 'AWS', description: 'Deploying and managing scalable cloud services.' },
+                    { name: 'Firebase', description: 'Using backend services for web and mobile apps.' },
+                    { name: 'Google Cloud', description: 'Leveraging Google\'s cloud infrastructure for various services.' },
+                ],
+                'Version Control': [
+                    { name: 'Git', description: 'Tracking and managing code changes collaboratively.' },
+                    { name: 'Github', description: 'Using a platform for hosting and managing code repositories.' },
+                ],
+                'Data Visualization': [
+                    { name: 'Streamlit', description: 'Building interactive data applications and dashboards in Python.' },
+                    { name: 'Plotly', description: 'Creating interactive, publication-quality graphs.' },
+                    { name: 'Dash', description: 'Building analytical web applications without JavaScript.' },
+                    { name: 'Gradio', description: 'Creating a customizable UI for your machine learning models.' },
+                    { name: 'Panel', description: 'Building custom interactive web apps and dashboards in Python.' },
+                ],
+                'ML Libraries': [
+                    { name: 'NumPy', description: 'Performing scientific computing with powerful array operations.' },
+                    { name: 'Pandas', description: 'Manipulating and analyzing data structures for data science.' },
+                    { name: 'Matplotlib', description: 'Creating static, animated, and interactive visualizations in Python.' },
+                    { name: 'TensorFlow', description: 'Building and training machine learning and deep learning models.' },
+                    { name: 'Scikit-learn', description: 'Applying a wide range of machine learning algorithms.' },
+                    { name: 'XGBoost', description: 'Implementing a powerful gradient boosting framework for machine learning.' },
+                    { name: 'Seaborn', description: 'Creating beautiful and informative statistical graphics.' },
+                    { name: 'Plotly', description: 'Creating interactive, browser-based visualizations.' },
+                    { name: 'NLTK', description: 'Working with a comprehensive toolkit for natural language processing.' },
+                    { name: 'Keras', description: 'Rapidly prototyping deep learning models with a user-friendly API.' },
+                    { name: 'OpenCV', description: 'Using computer vision for image and video processing.' },
+                    { name: 'PyTorch', description: 'Building and training deep learning models with a focus on flexibility.' },
+                    { name: 'LightGBM', description: 'Using a high-performance gradient boosting framework.' },
+                    { name: 'SciPy', description: 'Performing advanced scientific and technical computing.' },
+                    { name: 'spaCy', description: 'Building efficient and scalable natural language processing pipelines.' },
+                ],
+                'GIS Software': [
+                    { name: 'Google Earth Pro', description: 'Visualizing and analyzing geospatial data.' },
+                    { name: 'OpenStreetMap', description: 'Using and contributing to free, open-source geographic data.' },
+                    { name: 'SUMO', description: 'Simulating large-scale traffic and transportation networks.' },
+                    { name: 'QGIS', description: 'Working with an open-source geographic information system.' },
+                ],
+                'Operating Systems': [
+                    { name: 'Linux', description: 'Operating within the open-source, Unix-like operating system.' },
+                    { name: 'Windows', description: 'Developing and working on the Windows operating system.' },
+                    { name: 'Ubuntu', description: 'Using a popular, user-friendly Linux distribution.' },
+                    { name: 'Debian', description: 'Working with a free and open-source Linux distribution.' },
+                    { name: 'Raspberry Pi OS', description: 'Developing on the dedicated operating system for Raspberry Pi.' },
+                ],
+                'Generative AI Tools': [
+                    { name: 'ChatGPT', description: 'Using the advanced language model for various creative and technical tasks.' },
+                    { name: 'Claude', description: 'Interacting with a powerful large language model.' },
+                    { name: 'Gemini', description: 'Utilizing a new generation of multimodal language models.' },
+                    { name: 'Midjourney', description: 'Generating high-quality images from text prompts.' },
+                    { name: 'Leonardo.ai', description: 'Creating AI-generated art and assets with a versatile platform.' },
+                    { name: 'Tome', description: 'Creating dynamic, AI-powered presentations.' },
+                    { name: 'Photoshop AI', description: 'Using AI features within Adobe Photoshop for creative design.' },
+                    { name: 'Grok', description: 'Utilizing Grok for a variety of conversational tasks.' },
+                ],
+                'Design Tools': [
+                    { name: 'Canva', description: 'Designing visual content for presentations and social media.' },
+                    { name: 'Adobe Express', description: 'Creating multimedia content with a web-based design tool.' },
+                    { name: 'Figma', description: 'Collaborating on and designing user interfaces and prototypes.' },
+                    { name: 'Webflow', description: 'Designing and building responsive websites visually.' }
+                ]
+            }
+        };
+
+        let currentActiveSection = 'about';
+
+        function renderSection(sectionId) {
+            const sections = document.querySelectorAll('main > section');
+            sections.forEach(section => {
+                section.classList.add('hidden');
+                section.classList.remove('fade-in');
+            });
+
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+                targetSection.classList.add('fade-in');
+            }
+
+            const navLinks = document.querySelectorAll('#nav-links a');
+            navLinks.forEach(link => {
+                link.classList.remove('font-bold', 'text-gray-900', 'dark:text-white', 'relative', 'after:w-full');
+                link.classList.add('font-semibold', 'text-gray-700', 'dark:text-gray-300');
+            });
+
+            const activeLink = document.querySelector(`#nav-links a[data-section="${sectionId}"]`);
+            if (activeLink) {
+                activeLink.classList.add('font-bold', 'text-gray-900', 'dark:text-white', 'relative', 'after:w-full');
+                activeLink.classList.remove('font-semibold', 'text-gray-700', 'dark:text-gray-300');
+            }
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const toggleButton = document.getElementById('theme-toggle');
+            const isDark = html.classList.toggle('dark');
+            if (isDark) {
+                html.classList.remove('light');
+                toggleButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-900 dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>`;
+            } else {
+                html.classList.add('light');
+                toggleButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-900 dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>`;
+            }
+        }
+
+        let carouselState = {};
+
+        function navigateCarousel(containerId, direction) {
+            const container = document.getElementById(containerId);
+            const items = container.querySelectorAll('.carousel-item');
+            const totalItems = items.length;
+            
+            if (totalItems <= 1) return; // No need to navigate if there's only one item
+
+            let currentIndex = carouselState[containerId] !== undefined ? carouselState[containerId] : 0;
+            items[currentIndex].classList.remove('active');
+            items[currentIndex].style.display = 'none';
+
+            let newIndex = (currentIndex + direction + totalItems) % totalItems;
+            carouselState[containerId] = newIndex;
+            
+            items[newIndex].classList.add('active', 'fade-in');
+            items[newIndex].style.display = 'block';
+        }
+        
+        // Function to create a card for experience and projects
+        function createCard(item, type) {
+            let html = '';
+            if (type === 'experience') {
+                const descriptions = item.description.map(desc => `<li class="mt-2 text-gray-600 dark:text-gray-400 text-sm">${desc}</li>`).join('');
+                html = `
+                    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 w-full">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">${item.title}</h3>
+                        <p class="mt-1 text-gray-600 dark:text-gray-400">${item.company}</p>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-500">${item.date} | ${item.location}</p>
+                        <ul class="list-disc list-inside mt-4">
+                            ${descriptions}
+                        </ul>
+                    </div>
+                `;
+            } else if (type === 'projects') {
+                html = `
+                    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 w-full max-w-lg mx-auto">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">${item.title}</h3>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-500">${item.year}</p>
+                        <p class="mt-4 text-gray-600 dark:text-gray-400">${item.description}</p>
+                    </div>
+                `;
+            }
+            return html;
+        }
+
+        // Function to dynamically render skills with carousels
+        function renderSkills() {
+            const skillsContainer = document.querySelector('#skills .space-y-12');
+            skillsContainer.innerHTML = ''; // Clear existing content
+            for (const category in resumeData.skills) {
+                const categoryId = category.replace(/\s/g, '-').toLowerCase();
+                const items = resumeData.skills[category];
+                const carouselItems = items.map((skill, index) => `
+                    <div class="carousel-item p-4 ${index === 0 ? 'active' : ''}" style="${index === 0 ? 'display: block;' : 'display: none;'}">
+                        <div class="skill-card p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
+                            <h4 class="text-lg font-semibold text-gray-900 dark:text-white">${skill.name}</h4>
+                            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">${skill.description}</p>
+                        </div>
+                    </div>
+                `).join('');
+
+                const categoryHtml = `
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-8 fade-in-up">
+                        <h3 class="text-2xl font-bold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 dark:from-blue-400 dark:to-green-400">${category}</h3>
+                        <div id="${categoryId}-carousel" class="relative flex justify-center items-center">
+                            <button onclick="navigateCarousel('${categoryId}-carousel', -1)" class="carousel-button absolute left-0 p-2 rounded-full bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-400 dark:hover:bg-gray-600 opacity-70">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                            </button>
+                            <div class="flex-grow w-full max-w-sm">
+                                ${carouselItems}
+                            </div>
+                            <button onclick="navigateCarousel('${categoryId}-carousel', 1)" class="carousel-button absolute right-0 p-2 rounded-full bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-400 dark:hover:bg-gray-600 opacity-70">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                skillsContainer.innerHTML += categoryHtml;
+                carouselState[`${categoryId}-carousel`] = 0;
+            }
+        }
+
+        // Function to dynamically render contact info
+        function renderContact() {
+            const contactContainer = document.querySelector('#contact > div');
+            const contactHtml = resumeData.contact.map(item => `
+                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-4 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 w-full sm:w-1/3 hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-300">
+                    <div class="flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-indigo-500 dark:text-indigo-400" viewBox="0 0 24 24" fill="currentColor">
+                            ${item.icon}
+                        </svg>
+                    </div>
+                    <div class="flex-grow">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">${item.label}</h3>
+                        <p class="text-indigo-600 dark:text-indigo-400 text-sm break-all">${item.value}</p>
+                    </div>
+                </a>
+            `).join('');
+            contactContainer.innerHTML = contactHtml;
+        }
+
+        function renderProjects() {
+            const container = document.getElementById('projects-carousel');
+            const items = resumeData.projects.map(item => `<div class="carousel-item p-4">${createCard(item, 'projects')}</div>`).join('');
+            container.innerHTML = items;
+            if (container.children.length > 0) {
+                container.children[0].classList.add('active');
+                container.children[0].style.display = 'block';
+            }
+            carouselState['projects-carousel'] = 0;
+        }
+
+        function renderExperience() {
+            const container = document.getElementById('experience-list');
+            const items = resumeData.experience.map(item => createCard(item, 'experience')).join('');
+            container.innerHTML = items;
+        }
+        
+        // Main function to run everything on load
+        function initPortfolio() {
+            // Set up event listeners for navigation
+            document.querySelectorAll('#nav-links a').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const sectionId = e.target.getAttribute('href').substring(1);
+                    renderSection(sectionId);
+                });
+            });
+
+            // Set up event listener for theme toggle
+            document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+            
+            // Render all dynamic content
+            renderSkills();
+            renderContact();
+            renderProjects();
+            renderExperience();
+            
+            // Render initial section
+            renderSection('about');
+        }
+
+        document.addEventListener('DOMContentLoaded', initPortfolio);
+    </script>
+
+    <!-- Header Navigation -->
+    <header class="fixed top-0 left-0 right-0 z-50 p-4 bg-white/70 dark:bg-slate-900/70 backdrop-blur-lg shadow-sm">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 dark:from-blue-400 dark:to-green-400">
+                Shivani Bhat
+            </h1>
+            <nav id="nav-links" class="hidden sm:flex space-x-6 items-center">
+                <a href="#about" onclick="renderSection('about')" data-section="about" class="nav-link font-semibold text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white duration-200 relative">About</a>
+                <a href="#experience" onclick="renderSection('experience')" data-section="experience" class="nav-link font-semibold text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white duration-200 relative">Experience</a>
+                <a href="#projects" onclick="renderSection('projects')" data-section="projects" class="nav-link font-semibold text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white duration-200 relative">Projects</a>
+                <a href="#skills" onclick="renderSection('skills')" data-section="skills" class="nav-link font-semibold text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white duration-200 relative">Skills</a>
+                <a href="#contact" onclick="renderSection('contact')" data-section="contact" class="nav-link font-semibold text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white duration-200 relative">Contact</a>
+            </nav>
+            <button id="theme-toggle" class="p-2 rounded-full transition-colors bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer">
+                <!-- SVG icon for light/dark mode -->
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto mt-24 p-4 space-y-16">
+
+        <!-- About Section -->
+        <section id="about" class="min-h-[60vh] flex flex-col justify-center items-center text-center fade-in-up">
+            <h2 class="text-4xl sm:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 dark:from-blue-400 dark:to-green-400">
+                Shivani Bhat
+            </h2>
+            <p class="mt-6 text-lg max-w-3xl leading-relaxed text-gray-700 dark:text-gray-300">
+                Hey there! I'm Shivani, an engineering student who's absolutely obsessed with embedded systems and making cool stuff. My journey so far has been a blast—I’ve had the chance to work on some incredible team projects and even got to dabble in things like IoT and signal processing. While I'm still learning the ropes, I'm super eager to jump into an entry-level embedded systems engineering role and bring my passion to a team where I can grow and contribute.
+            </p>
+            <div class="mt-12 w-full max-w-2xl text-left fade-in-up">
+                <h3 class="text-2xl font-bold mb-4 text-center">Education</h3>
+                <div class="space-y-4">
+                    <!-- Education items will be dynamically added here -->
+                    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+                        <h4 class="text-xl font-bold text-gray-900 dark:text-white">B.Tech in Electronics and Telecommunication Engineering</h4>
+                        <p class="mt-1 text-gray-600 dark:text-gray-400">Sardar Patel Institute of Technology, University of Mumbai</p>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-500">2022-2026</p>
+                    </div>
+                    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+                        <h4 class="text-xl font-bold text-gray-900 dark:text-white">Minor in Management Studies</h4>
+                        <p class="mt-1 text-gray-600 dark:text-gray-400">SP Jain Institute of Management Research</p>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-500">2024-2026</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience" class="hidden py-20 fade-in-up">
+            <h2 class="text-3xl font-bold text-center mb-10">Experience</h2>
+            <div id="experience-list" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Experience items will be dynamically added here by JS -->
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="hidden py-20 fade-in-up">
+            <h2 class="text-3xl font-bold text-center mb-10">Projects</h2>
+            <div class="relative w-full overflow-hidden flex justify-center items-center">
+                <div class="flex space-x-8 justify-center w-full" id="projects-carousel">
+                    <!-- Projects items will be dynamically added here -->
+                </div>
+            </div>
+            <div class="flex justify-center mt-6 space-x-4">
+                <button onclick="navigateCarousel('projects-carousel', -1)" class="carousel-button w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-400 dark:hover:bg-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <button onclick="navigateCarousel('projects-carousel', 1)" class="carousel-button w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-400 dark:hover:bg-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="hidden py-20 fade-in-up">
+            <h2 class="text-3xl font-bold text-center mb-10">Skills</h2>
+            <div class="space-y-12">
+                <!-- Skills categories with carousels will be dynamically added here -->
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="hidden py-20 fade-in-up">
+            <h2 class="text-3xl font-bold text-center mb-10">Contact</h2>
+            <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-8">
+                <!-- Contact items will be dynamically added here -->
+            </div>
+        </section>
+    </main>
+
+    <footer class="p-6 text-center text-sm text-gray-500 dark:text-gray-500">
+        &copy; 2024 Shivani Bhat. All rights reserved.
+    </footer>
+</body>
+</html>
