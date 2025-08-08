@@ -59,31 +59,34 @@
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
 
-        /* --- Removed the old underline CSS here --- */
-
-        /* Styling for the carousel buttons */
-        .carousel-button {
-            transition: opacity 0.3s ease, transform 0.3s ease;
+        /* Styling for the new projects cards with background images */
+        .project-card {
+            /* This is the overlay to make text readable */
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            z-index: 1;
         }
-
-        .carousel-button:hover {
-            opacity: 1;
-            transform: scale(1.1);
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5); /* 50% opacity black overlay */
+            z-index: -1;
+            border-radius: 0.5rem; /* Match the parent border-radius */
         }
-
-        /* Hide content that is not active in the carousel */
-        .carousel-item {
-            display: none;
+        .project-card h3, .project-card p {
+            color: white !important;
         }
-
-        .carousel-item.active {
-            display: block;
+        .project-link-button {
+            transition: all 0.3s ease;
         }
-
-        @media (max-width: 768px) {
-            .mobile-column {
-                flex-direction: column;
-            }
+        .project-link-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         /* Custom styles for the theme slider */
@@ -133,11 +136,38 @@
                 { degree: 'B.Tech in Electronics and Telecommunication Engineering', school: 'Sardar Patel Institute of Technology, University of Mumbai', years: '2022-2026' },
                 { degree: 'Minor in Management Studies', school: 'SP Jain Institute of Management Research', years: '2024-2026' }
             ],
+            // Updated project data to use an array of links
             projects: [
-                { title: 'Anomaly Detection for Zero Day Exploits', year: '2025', description: 'Implemented an unsupervised deep learning pipeline for detecting zero-day exploits using VAE and clustering techniques. Successfully identified anomalous network behavior indicating previously unknown vulnerabilities.' },
-                { title: 'Can Satellite', year: '2023-2024', description: 'Led the electronics team for a multidisciplinary student satellite team. Integrated sensors, actuators, and power systems. Ranked 10th globally in the US Cansat Competition.' },
-                { title: 'Unmanned Ground Vehicle', year: '2023', description: 'Developed an autonomous ground robot for crop monitoring and spraying. Integrated GIS, SPI/I2C communication, and various sensors for navigation.' },
-                { title: 'Smart Guidance Spectacles', year: '2023', description: 'Developed a wearable assistive device using Python-based recognition, Bluetooth, and WebSocket programming. Designed an ergonomic 3D-printed casing for seamless usability.' },
+                {
+                    title: 'Anomaly Detection for Zero Day Exploits',
+                    year: '2025',
+                    description: 'Implemented an unsupervised deep learning pipeline for detecting zero-day exploits using VAE and clustering techniques. Successfully identified anomalous network behavior indicating previously unknown vulnerabilities.',
+                    image: './zero_day.png',
+                    links: [
+                        { label: 'GitHub', url: 'https://github.com/shivanibhat24/Zero-Day-Exploit-Detector' }
+                    ]
+                },
+                {
+                    title: 'Can Satellite',
+                    year: '2023-2025',
+                    description: 'Led the electronics team for a multidisciplinary student satellite team. Integrated sensors, actuators, and power systems. Ranked 10th globally in the US Cansat Competition.',
+                    image: 'https://placehold.co/600x400/963D97/ffffff?text=Satellite+Project',
+                    links: []
+                },
+                {
+                    title: 'Unmanned Ground Vehicle',
+                    year: '2024',
+                    description: 'Developed an autonomous ground robot for crop monitoring and spraying. Integrated GIS, SPI/I2C communication, and various sensors for navigation.',
+                    image: 'https://placehold.co/600x400/00A985/ffffff?text=Autonomous+Robot',
+                    links: [] // A project with no links
+                },
+                {
+                    title: 'Smart Guidance Spectacles',
+                    year: '2024',
+                    description: 'Developed a wearable assistive device using Python-based recognition, Bluetooth, and WebSocket programming. Designed an ergonomic 3D-printed casing for seamless usability.',
+                    image: 'https://placehold.co/600x400/D01F3E/ffffff?text=Smart+Spectacles',
+                    links: []
+                },
             ],
             skills: {
                 'Core Languages': [
@@ -303,8 +333,8 @@
                     'text-transparent',
                     'bg-clip-text',
                     'bg-gradient-to-r',
-                    'from-yellow-400',
-                    'to-pink-500'
+                    'from-purple-600',
+                    'to-pink-700'
                 );
                 // Add back the default, inactive classes
                 link.classList.add('font-semibold', 'text-gray-600', 'dark:text-gray-400');
@@ -331,26 +361,6 @@
             const isDark = html.classList.toggle('dark');
             html.classList.toggle('light', !isDark);
         }
-
-        let carouselState = {};
-
-        function navigateCarousel(containerId, direction) {
-            const container = document.getElementById(containerId);
-            const items = container.querySelectorAll('.carousel-item');
-            const totalItems = items.length;
-            
-            if (totalItems <= 1) return; // No need to navigate if there's only one item
-
-            let currentIndex = carouselState[containerId] !== undefined ? carouselState[containerId] : 0;
-            items[currentIndex].classList.remove('active');
-            items[currentIndex].style.display = 'none';
-
-            let newIndex = (currentIndex + direction + totalItems) % totalItems;
-            carouselState[containerId] = newIndex;
-            
-            items[newIndex].classList.add('active', 'fade-in');
-            items[newIndex].style.display = 'block';
-        }
         
         // Function to create a card for experience or education
         function createCard(item) {
@@ -376,22 +386,40 @@
                     </div>
                 `;
             } else if (item.type === 'projects') {
+                // Renders link buttons if the links array exists and has content
+                const linkButtons = item.links && item.links.length > 0 ?
+                    item.links.map(link => `
+                        <a href="${link.url}" target="_blank" rel="noopener noreferrer" 
+                           class="project-link-button inline-flex items-center text-sm font-semibold text-white px-3 py-1 
+                                  bg-gradient-to-r from-orange-500 to-red-500 rounded-full 
+                                  shadow-md hover:from-orange-600 hover:to-red-600">
+                            ${link.label}
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    `).join('') : '';
+
                 html = `
-                    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 w-full">
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">${item.title}</h3>
-                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-500">${item.year}</p>
-                        <p class="mt-4 text-gray-600 dark:text-gray-400">${item.description}</p>
+                    <div class="project-card p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 w-full"
+                         style="background-image: url('${item.image}');">
+                        <h3 class="text-xl font-bold">${item.title}</h3>
+                        <div class="flex items-center space-x-2 mt-1">
+                            <p class="text-sm">${item.year}</p>
+                            ${linkButtons}
+                        </div>
+                        <p class="mt-4">${item.description}</p>
                     </div>
                 `;
             }
             return html;
         }
 
-        // Function to dynamically render skills as a carousel of groups
+        // Function to dynamically render skills in a grid (no carousel)
         function renderSkills() {
-            const skillsContainer = document.querySelector('#skills-carousel');
+            const skillsContainer = document.querySelector('#skills-grid');
             skillsContainer.innerHTML = ''; // Clear existing content
-            let index = 0;
+
             for (const category in resumeData.skills) {
                 const items = resumeData.skills[category];
                 const skillsList = items.map(skill => `
@@ -401,21 +429,16 @@
                     </li>
                 `).join('');
 
-                // Changed the gradient to a beautiful caramel color scheme
                 const categoryHtml = `
-                    <div class="carousel-item p-4 ${index === 0 ? 'active' : ''}" style="${index === 0 ? 'display: block;' : 'display: none;'}">
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-8 max-w-lg mx-auto">
-                            <h3 class="text-2xl font-bold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-600 dark:from-yellow-400 dark:to-orange-500">${category}</h3>
-                            <ul class="list-none space-y-6">
-                                ${skillsList}
-                            </ul>
-                        </div>
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-8">
+                        <h3 class="text-2xl font-bold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-600 dark:from-yellow-400 dark:to-orange-500">${category}</h3>
+                        <ul class="list-none space-y-6">
+                            ${skillsList}
+                        </ul>
                     </div>
                 `;
                 skillsContainer.innerHTML += categoryHtml;
-                index++;
             }
-            carouselState['skills-carousel'] = 0;
         }
 
         // Function to dynamically render contact info as a list
@@ -472,7 +495,7 @@
             document.getElementById('theme-toggle-slider').addEventListener('click', toggleTheme);
 
             // Render all dynamic content
-            renderExperienceAndEducation(); // Updated function name
+            renderExperienceAndEducation();
             renderProjects();
             renderSkills();
             renderContact();
@@ -551,19 +574,12 @@
             </div>
         </section>
 
-        <!-- Skills Section -->
+        <!-- Skills Section - Now a grid layout -->
         <section id="skills" class="hidden py-20 fade-in-up">
             <h2 class="text-3xl font-bold text-center mb-10 text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-800 dark:from-blue-400 dark:to-green-400">Skills</h2>
-            <div class="relative flex justify-center items-center">
-                <button onclick="navigateCarousel('skills-carousel', -1)" class="carousel-button absolute left-0 p-2 rounded-full bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-400 dark:hover:bg-gray-600 opacity-70">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-                </button>
-                <div id="skills-carousel" class="flex-grow w-full max-w-3xl overflow-hidden">
-                    <!-- Skills categories with carousels will be dynamically added here -->
-                </div>
-                <button onclick="navigateCarousel('skills-carousel', 1)" class="carousel-button absolute right-0 p-2 rounded-full bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-400 dark:hover:bg-gray-600 opacity-70">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-                </button>
+            <!-- Replaced the carousel container and buttons with a simple grid -->
+            <div id="skills-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <!-- Skills categories with their lists will be dynamically added here -->
             </div>
         </section>
 
