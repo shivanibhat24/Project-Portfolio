@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shivani Bhat - Portfolio</title>
+    <!-- Tailwind CSS CDN for utility-first styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for 'Sacramento' (for the name) and 'Inter' (for body text) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Sacramento&display=swap" rel="stylesheet">
+    <style>
+        /* Custom CSS styles and keyframes for animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        /* A more elegant script font for the name with extra vertical padding to prevent clipping */
+        .font-sacramento {
+            font-family: 'Sacramento', cursive;
+        }
+        
+        /* Styles for dark mode text glow on active links */
+        .dark .text-white-glow {
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+        }
+
+        /* Base font for the entire document */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Style for the PDF viewer modal overlay */
+        .pdf-viewer-overlay {
+            background-color: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(8px);
+        }
+
+        /* Define CSS custom properties for light theme */
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #1f2937;
+            --header-bg: #ffffff;
+            --footer-bg: #ffffff;
+            --secondary-text: #6b7280;
+            --link-color: #4b5563;
+            --active-link-color: #000000;
+        }
+
+        /* Override CSS custom properties for dark theme */
+        .dark {
+            --bg-color: #0c0a09; /* Near-black for a dramatic change */
+            --text-color: #f3f4f6;
+            --header-bg: #1f2937;
+            --footer-bg: #1f2937;
+            --secondary-text: #9ca3af;
+            --link-color: #d1d5db;
+            --active-link-color: #ffffff;
+        }
+    </style>
+</head>
+<body class="transition-colors duration-500">
+
+    <!-- Main container uses CSS variables for colors -->
+    <div class="min-h-screen font-sans bg-[var(--bg-color)] text-[var(--text-color)] transition-colors duration-500 flex flex-col">
+        
+        <!-- Header and navigation section also use CSS variables for colors -->
+        <header class="p-6 md:p-8 flex flex-col sm:flex-row justify-between items-center bg-[var(--header-bg)] backdrop-blur-sm shadow-lg sticky top-0 z-50 transition-colors duration-500">
+            <!-- The h1 has a gradient that changes with the theme -->
+            <h1 id="name-heading" class="text-4xl md:text-5xl font-sacramento font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 mb-4 sm:mb-0 py-2">
+                Shivani Bhat
+            </h1>
+            <nav class="flex items-center space-x-6">
+                <!-- Nav links use the new CSS variables -->
+                <a href="#" id="nav-about" class="text-md cursor-pointer transition-colors duration-300 transform hover:scale-110">About</a>
+                <a href="#" id="nav-work" class="text-md cursor-pointer transition-colors duration-300 transform hover:scale-110">Work</a>
+                <a href="#" id="nav-contact" class="text-md cursor-pointer transition-colors duration-300 transform hover:scale-110">Contact</a>
+                <button id="theme-toggle" aria-label="Toggle theme" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-300 transform hover:scale-110 active:scale-95">
+                    <!-- Sun icon -->
+                    <svg id="theme-icon-sun" class="h-6 w-6 text-gray-800 dark:text-gray-200" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="4" />
+                        <path d="M12 2v2" />
+                        <path d="M12 20v2" />
+                        <path d="M4.93 4.93l1.41 1.41" />
+                        <path d="M17.66 17.66l1.41 1.41" />
+                        <path d="M2 12h2" />
+                        <path d="M20 12h2" />
+                        <path d="M4.93 19.07l1.41-1.41" />
+                        <path d="M17.66 6.34l1.41-1.41" />
+                    </svg>
+                    <!-- Moon icon -->
+                    <svg id="theme-icon-moon" class="h-6 w-6 text-gray-800 dark:text-gray-200 hidden" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                    </svg>
+                </button>
+            </nav>
+        </header>
+
+        <!-- Main content area where different pages are rendered -->
+        <main id="main-content" class="container mx-auto px-4 md:px-8 py-12 md:py-20 flex-grow">
+            <!-- Content will be injected by JavaScript -->
+        </main>
+        
+        <!-- Footer section -->
+        <footer class="w-full py-8 text-center bg-[var(--footer-bg)] transition-colors duration-500 shadow-inner mt-auto">
+            <p class="text-[var(--secondary-text)] text-md">
+                Made with <span class="text-red-500">❤️</span> by Shivani
+            </p>
+        </footer>
+    </div>
+
+    <!-- PDF Viewer Modal -->
+    <div id="pdf-viewer-modal" class="fixed inset-0 z-[100] hidden flex justify-center items-center p-4 pdf-viewer-overlay">
+        <div class="relative w-full h-full max-w-6xl max-h-[90vh] bg-[var(--bg-color)] rounded-lg shadow-2xl overflow-hidden">
+            <button id="close-pdf-viewer" class="absolute top-4 right-4 z-50 p-2 rounded-full bg-gray-700 text-white hover:bg-gray-600 transition-colors duration-300">
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                </svg>
+            </button>
+            <iframe id="pdf-frame" src="" frameborder="0" class="w-full h-full"></iframe>
+        </div>
+    </div>
+
+    <script>
+        // Store portfolio data in a global variable for easy access 
+        const portfolioItems = [
+            { title: "Book Cafe Logo", category: "Logos", image: "./Novella.png" },
+            { title: "Satellite Team Design", category: "Logos", image: "./Spriha.png" },
+            { title: "Restaurant Logo", category: "Logos", image: "./Health Hub Logo.png" },
+            { title: "Club Concept Presentation", category: "Presentations", image: "./astro.jpeg", pdfUrl: "./Astrophysics Club.pdf" },
+            { title: "Lotus", category: "Vectors", image: "./Lotus Vector Design.jpg" },
+            { title: "Music", category: "Vectors", image: "./Music Pattern.jpg" },
+            { title: "Hiking Tshirt", category: "T-shirt Design", image: "./Hill T-shirt.jpg" },
+            { title: "Beach Vibes", category: "T-shirt Design", image: "./Wave T Shirt.png" },
+            { title: "Tropical Holiday", category: "T-shirt Design", image: "./Smoothie.jpg" },
+            { title: "Futuristic City Concept", category: "Concept Design", image: "./Cities in 2100.jpg" },
+            { title: "Dreamy Bengaluru Sky", category: "Photography", image: "./Bengaluru Sky.jpg" },
+            { title: "Ghats in the Rain", category: "Photography", image: "./Nashik Highway.jpg" },
+            { title: "River Ganga in Rishikesh", category: "Photography", image: "./Ganga River.jpg" },
+            { title: "Mumbai Sea-Face", category: "Photography", image: "./Mumbai Sea Link.jpg" },
+            { title: "Mushroom Soup", category: "Photography", image: "./Mushroom Soup.jpg" },
+        ];
+
+        // Global state variables 
+        let currentPage = 'about';
+        let activeWorkCategory = 'Logos'; // Default category for the Work page 
+
+        const mainContent = document.getElementById('main-content');
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const pdfModal = document.getElementById('pdf-viewer-modal');
+        const closePdfBtn = document.getElementById('close-pdf-viewer');
+        const pdfFrame = document.getElementById('pdf-frame');
+        const navLinks = {
+            about: document.getElementById('nav-about'),
+            work: document.getElementById('nav-work'),
+            contact: document.getElementById('nav-contact')
+        };
+        const themeIcons = {
+            sun: document.getElementById('theme-icon-sun'),
+            moon: document.getElementById('theme-icon-moon')
+        };
+
+        // Functions for the PDF Viewer Modal 
+        function openPdfViewer(pdfUrl) {
+            pdfFrame.src = pdfUrl;
+            pdfModal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+        }
+
+        function closePdfViewer() {
+            pdfFrame.src = '';
+            pdfModal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        // Renders the portfolio items for a given category 
+        function renderWorkItems(category) {
+            const filteredItems = portfolioItems.filter(item => item.category === category);
+            const itemsHtml = filteredItems.map(item => {
+                // If the item is a presentation, we use a button to trigger the viewer 
+                if (item.category === 'Presentations') {
+                    return `
+                        <div class="relative group rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer aspect-[4/3]" onclick="openPdfViewer('${item.pdfUrl}')">
+                            <!-- Image container now has an aspect ratio and the image uses object-contain -->
+                            <img src="${item.image}" alt="${item.title}" class="absolute inset-0 w-full h-full object-contain" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x300/6b7280/ffffff?text=Image+Load+Error';" />
+                            <div class="absolute inset-0 bg-gradient-to-br from-black/60 to-black/30 flex flex-col justify-end p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <h3 class="text-white text-xl font-bold">${item.title}</h3>
+                                <p class="text-gray-200 text-sm mt-1">${item.category}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+                // For other categories, we render a regular div 
+                return `
+                    <div class="relative group rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 aspect-[4/3]">
+                        <!-- Image container now has an aspect ratio and the image uses object-contain -->
+                        <img src="${item.image}" alt="${item.title}" class="absolute inset-0 w-full h-full object-contain" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x300/6b7280/ffffff?text=Image+Load+Error';" />
+                        <div class="absolute inset-0 bg-gradient-to-br from-black/60 to-black/30 flex flex-col justify-end p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <h3 class="text-white text-xl font-bold">${item.title}</h3>
+                            <p class="text-gray-200 text-sm mt-1">${item.category}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const itemsContainer = document.getElementById('work-items-container');
+            if (itemsContainer) {
+                itemsContainer.innerHTML = itemsHtml;
+            }
+        }
+
+        // Renders the full Work page structure, including tabs and the initial set of items 
+        function renderWorkPage() {
+            const categories = ['Logos', 'Concept Design', 'T-shirt Design', 'Photography', 'Presentations', 'Vectors'];
+            // Updated gradient classes for the new theme 
+            const isDark = document.documentElement.classList.contains('dark');
+            const themeClass = isDark ? 'from-sky-400 to-teal-400' : 'from-red-600 via-orange-500 to-yellow-500';
+
+            const tabsHtml = categories.map(category => `
+                <button
+                    data-category="${category}"
+                    class="work-tab px-6 py-2 rounded-full font-semibold transition-all duration-300
+                    ${activeWorkCategory === category
+                        ? 'bg-purple-600 text-white shadow-lg transform scale-105'
+                        : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700'
+                    }"
+                >
+                    ${category}
+                </button>
+            `).join('');
+
+            return `
+                <section id="work" class="py-20 animate-fade-in-up text-center">
+                    <h2 class="text-4xl md:text-5xl font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r ${themeClass}">
+                        My Work
+                    </h2>
+                    <div id="work-tabs" class="flex flex-wrap justify-center mb-12 gap-2">
+                        ${tabsHtml}
+                    </div>
+                    <div id="work-items-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- Portfolio items will be dynamically injected here -->
+                    </div>
+                </section>
+            `;
+        }
+
+        // Functions to render other page content 
+        function renderAboutPage() {
+            // Updated gradient classes for the new theme 
+            const isDark = document.documentElement.classList.contains('dark');
+            const themeClass = isDark ? 'from-sky-400 to-teal-400' : 'from-red-600 via-orange-500 to-yellow-500';
+            return `
+                <section id="about" class="py-20 animate-fade-in-up text-center">
+                    <h2 class="text-4xl md:text-5xl font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r ${themeClass}">
+                        About Me
+                    </h2>
+                    <p class="text-lg md:text-xl max-w-3xl mx-auto leading-relaxed text-[var(--secondary-text)]">
+                        Hey there! I'm Shivani, a graphic designer who loves to turn big ideas into beautiful visuals. I'm all about creating clean, vibrant designs that tell a story—whether it's a slick logo for a brand-new business or a detailed illustration that brings a project to life. My goal is to make every design not just look good, but feel good, too.
+                    </p>
+                </section>
+            `;
+        }
+        
+        function renderContactPage() {
+            // Updated gradient classes for the new theme 
+            const isDark = document.documentElement.classList.contains('dark');
+            const themeClass = isDark ? 'from-sky-400 to-teal-400' : 'from-red-600 via-orange-500 to-yellow-500';
+            return `
+                <section id="contact" class="py-20 animate-fade-in-up text-center">
+                    <h2 class="text-4xl md:text-5xl font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r ${themeClass}">
+                        Contact
+                    </h2>
+                    <p class="text-lg md:text-xl max-w-3xl mx-auto leading-relaxed text-[var(--secondary-text)]">
+                        Ready to collaborate? Let's create something amazing together.
+                    </p>
+                    <div class="mt-8 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 justify-center">
+                        <a
+                            href="https://github.com/shivanibhat24"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="inline-flex items-center justify-center px-8 py-3 font-bold text-white rounded-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                        >
+                            <!-- A cleaner, more modern GitHub icon -->
+                            <svg class="h-6 w-6 mr-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3.5 0 4.3-2.2 4.3-4.5 0-1.2-.5-2.5-1.5-3.2.3-1 .3-2.8 0-3.8-1 0-2.3.4-3 1.5l-.2.3c-1.3-.4-2.7-.4-4 0l-.2-.3c-.7-1.1-2-1.5-3-1.5-.3 1-.3 2.8 0 3.8-1 .7-1.5 2-1.5 3.2 0 2.3.8 4.5 4.3 4.5-.1.3-.2.7-.2 1.2v4" />
+                                <path d="M9 18c-4.5.5-6-2.5-6-2.5" />
+                            </svg>
+                            GitHub
+                        </a>
+                        <!-- The button now uses the same gradient and layout as the work tabs -->
+                        <a
+                            href="shivani.gbhat@gmail.com"
+                            class="inline-flex items-center justify-center px-8 py-3 font-bold text-white rounded-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                        >
+                            <!-- A cleaner, more modern Gmail icon -->
+                            <svg class="h-6 w-6 mr-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect width="20" height="16" x="2" y="4" rx="2" />
+                                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                            </svg>
+                            Gmail
+                        </a>
+                    </div>
+                </section>
+            `;
+        }
+        
+        // Main function to update the page content based on navigation 
+        function navigateTo(pageName) {
+            currentPage = pageName;
+            
+            // Clear existing content and render the new page 
+            mainContent.innerHTML = '';
+            let contentHtml;
+            switch(pageName) {
+                case 'about':
+                    contentHtml = renderAboutPage();
+                    break;
+                case 'work':
+                    contentHtml = renderWorkPage();
+                    break;
+                case 'contact':
+                    contentHtml = renderContactPage();
+                    break;
+                default:
+                    contentHtml = renderAboutPage();
+            }
+            mainContent.innerHTML = contentHtml;
+            
+            // Special handling for the 'work' page to render initial items 
+            if (pageName === 'work') {
+                renderWorkItems(activeWorkCategory);
+                // Re-attach event listeners for work tabs after the content is rendered 
+                document.getElementById('work-tabs').addEventListener('click', (event) => {
+                    const button = event.target.closest('.work-tab');
+                    if (button) {
+                        const newCategory = button.dataset.category;
+                        if (newCategory !== activeWorkCategory) {
+                            activeWorkCategory = newCategory;
+                            // Re-render the entire work page to update tab styling and items 
+                            navigateTo('work');
+                        }
+                    }
+                });
+            }
+
+            // Update the active navigation link styles using a cleaner function 
+            updateNavLinks(pageName);
+        }
+
+        // A new function to handle navigation link styling 
+        function updateNavLinks(activePage) {
+            const isDark = document.documentElement.classList.contains('dark');
+            Object.keys(navLinks).forEach(pageName => {
+                const link = navLinks[pageName];
+                const isActive = pageName === activePage;
+
+                // Reset all links 
+                link.classList.remove('font-bold', 'text-black', 'text-white', 'text-white-glow', 'text-gray-500', 'dark:text-gray-300');
+
+                if (isActive) {
+                    link.classList.add('font-bold');
+                    if (isDark) {
+                        link.classList.add('text-white', 'text-white-glow');
+                    } else {
+                        link.classList.add('text-black');
+                    }
+                } else {
+                    link.classList.add('text-gray-500', 'dark:text-gray-300');
+                }
+            });
+        }
+        
+        // Function to toggle between light and dark themes 
+        function toggleTheme() {
+            const htmlElement = document.documentElement;
+            const isDark = htmlElement.classList.toggle('dark');
+            
+            // Get the h1 element for the name 
+            const h1Name = document.getElementById('name-heading');
+
+            // Toggle the gradient classes for the name manually to ensure the change is visible 
+            if (h1Name) {
+                if (isDark) {
+                    h1Name.classList.remove('from-red-600', 'via-orange-500', 'to-yellow-500');
+                    h1Name.classList.add('from-sky-400', 'to-teal-400');
+                } else {
+                    h1Name.classList.remove('from-sky-400', 'to-teal-400');
+                    h1Name.classList.add('from-red-600', 'via-orange-500', 'to-yellow-500');
+                }
+            }
+            
+            // Toggle visibility of the sun and moon icons based on the new theme state 
+            themeIcons.sun.classList.toggle('hidden', !isDark);
+            themeIcons.moon.classList.toggle('hidden', isDark);
+
+            // Re-render the current page content to update other gradients 
+            navigateTo(currentPage);
+        }
+
+        // Initialization function that runs when the DOM is fully loaded 
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check for system theme preference and set initial theme 
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
+            }
+            
+            // Set initial icon visibility based on the determined theme 
+            const isDark = document.documentElement.classList.contains('dark');
+            themeIcons.sun.classList.toggle('hidden', !isDark);
+            themeIcons.moon.classList.toggle('hidden', isDark);
+
+            // Attach event listeners for navigation links using a loop 
+            Object.keys(navLinks).forEach(pageName => {
+                navLinks[pageName].addEventListener('click', (event) => {
+                    event.preventDefault();
+                    navigateTo(pageName);
+                });
+            });
+
+            // Attach event listener for theme toggle button 
+            themeToggleBtn.addEventListener('click', toggleTheme);
+            
+            // Attach event listener for closing the PDF viewer modal 
+            closePdfBtn.addEventListener('click', closePdfViewer);
+
+            // Render the initial page 
+            navigateTo(currentPage);
+        });
+    </script>
+</body>
+</html>
