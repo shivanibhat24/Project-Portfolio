@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Classifier Console</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap');
+        
+        :root {
+            --bg-dark: #080816;
+            --panel-bg: rgba(20, 20, 40, 0.7);
+            --border-color: #20b2aa;
+            --accent-glow: #00ffff;
+            --text-primary: #e0e0f0;
+            --text-secondary: #a0a0c0;
+            --color-star: #ffeb3b;
+            --color-galaxy: #ff6b9d;
+            --color-quasar: #1e90ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto Mono', monospace;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Starfield background animation */
+        .stars-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            animation: moveStars 100s linear infinite;
+        }
+
+        .stars-bg:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><rect width="100%" height="100%" fill="%23000"/><path fill="%23fff" d="M10,20 h1 v1 h-1z M30,50 h1 v1 h-1z M50,10 h1 v1 h-1z M80,80 h1 v1 h-1z M100,30 h1 v1 h-1z M120,70 h1 v1 h-1z M140,20 h1 v1 h-1z M160,55 h1 v1 h-1z M180,90 h1 v1 h-1z M20,110 h1 v1 h-1z M45,130 h1 v1 h-1z M70,140 h1 v1 h-1z M95,160 h1 v1 h-1z M125,180 h1 v1 h-1z M150,195 h1 v1 h-1z"/></svg>');
+            background-size: 200px 200px;
+            opacity: 0.8;
+            animation: moveStars 200s linear infinite;
+            z-index: 0;
+        }
+        
+        @keyframes moveStars {
+            0% { background-position: 0 0; }
+            100% { background-position: 100% 100%; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1400px;
+            width: 95%;
+            margin: 40px auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        /* Console Panels */
+        .panel {
+            background-color: var(--panel-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.1), inset 0 0 15px rgba(0, 255, 255, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .panel:hover {
+            transform: translateY(-5px);
+        }
+
+        .panel-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            color: var(--accent-glow);
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            text-align: center;
+            color: var(--accent-glow);
+            text-shadow: 0 0 15px var(--accent-glow);
+            letter-spacing: 5px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+        }
+
+        /* Input Grid */
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--accent-glow);
+            margin-bottom: 8px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent-glow);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        /* Buttons */
+        .btn-group {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            background-color: var(--border-color);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            color: var(--bg-dark);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px var(--accent-glow);
+            background-color: var(--accent-glow);
+        }
+        
+        .btn-secondary {
+            background-color: #ff6b9d;
+            color: var(--bg-dark);
+        }
+
+        .btn-tertiary {
+            background-color: #c471ed;
+            color: var(--bg-dark);
+        }
+
+        /* Results & Performance Sections */
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid;
+            background-color: rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .result-item:hover {
+            transform: translateX(5px);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .result-item.star { border-left-color: var(--color-star); }
+        .result-item.galaxy { border-left-color: var(--color-galaxy); }
+        .result-item.quasar { border-left-color: var(--color-quasar); }
+        
+        .accuracy {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            color: #00ff88;
+            font-size: 1.1rem;
+        }
+
+        .results-panel {
+            display: none;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid var(--accent-glow);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Object Visualization */
+        .object-viz {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .cosmic-object {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            position: relative;
+            animation: float 3s ease-in-out infinite, pulse 2s infinite alternate;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(0, 255, 255, 0.5); }
+            50% { box-shadow: 0 0 50px rgba(0, 255, 255, 0.8); }
+        }
+
+        .star-viz {
+            background: radial-gradient(circle, #ffeb3b, #ffc107, #ff5722);
+            box-shadow: 0 0 60px var(--color-star);
+        }
+
+        .galaxy-viz {
+            background: radial-gradient(ellipse, #ff6b9d, #9c27b0, #3f51b5);
+            box-shadow: 0 0 60px var(--color-galaxy);
+        }
+
+        .quasar-viz {
+            background: radial-gradient(circle, #1e90ff, #00ffff, #fff);
+            box-shadow: 0 0 70px var(--color-quasar);
+        }
+
+        .object-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .title {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated background -->
+    <div class="stars-bg"></div>
+
+    <main class="container">
+        <header style="grid-column: 1 / -1;">
+            <h1 class="title">COSMIC CLASSIFIER</h1>
+            <p class="subtitle">SYSTEM INTERFACE // 1.1</p>
+        </header>
+
+        <!-- Input Panel -->
+        <section class="panel">
+            <h2 class="panel-header">OBJECT PARAMETERS</h2>
+            <form id="classificationForm">
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="ra">RIGHT ASCENSION (deg)</label>
+                        <input type="number" id="ra" step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="input-group">
+                        <label for="dec">DECLINATION (deg)</label>
+                        <input type="number" id="dec" step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="input-group">
+                        <label for="u">U MAGNITUDE</label>
+                        <input type="number" id="u" step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="input-group">
+                        <label for="g">G MAGNITUDE</label>
+                        <input type="number" id="g" step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="input-group">
+                        <label for="r">R MAGNITUDE</label>
+                        <input type="number" id="r" step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="input-group">
+                        <label for="i">I MAGNITUDE</label>
+                        <input type="number" id="i" step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="input-group">
+                        <label for="z">Z MAGNITUDE</label>
+                        <input type="number" id="z" step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="input-group">
+                        <label for="redshift">REDSHIFT</label>
+                        <input type="number" id="redshift" step="0.001" placeholder="0.000">
+                    </div>
+                </div>
+            
+                <div class="btn-group">
+                    <button type="submit" class="btn">CLASSIFY</button>
+                    <button type="button" class="btn btn-secondary" id="generateSampleBtn">GENERATE SAMPLE</button>
+                    <button type="button" class="btn btn-tertiary" id="runDemoBtn">RUN DEMO</button>
+                </div>
+            </form>
+        </section>
+        
+        <!-- Results Panel -->
+        <section class="panel results-panel" id="results" aria-live="polite" aria-atomic="true">
+            <h2 class="panel-header">CLASSIFICATION RESULTS</h2>
+            <div id="classification-results"></div>
+            <div class="object-viz">
+                <div id="cosmic-object" class="cosmic-object"></div>
+                <div id="object-description" class="object-description"></div>
+            </div>
+        </section>
+        
+        <!-- Analysis Panel -->
+        <section class="panel" style="grid-column: 1 / -1;">
+            <h2 class="panel-header">MODEL PERFORMANCE</h2>
+            <div id="performance-metrics"></div>
+        </section>
+    </main>
+    
+    <script>
+        // Use an IIFE for encapsulation
+        (async () => {
+            const ELEMENTS = {
+                starsContainer: document.querySelector('.stars-bg'), // Not used in this version, but kept for consistency
+                raInput: document.getElementById('ra'),
+                decInput: document.getElementById('dec'),
+                uInput: document.getElementById('u'),
+                gInput: document.getElementById('g'),
+                rInput: document.getElementById('r'),
+                iInput: document.getElementById('i'),
+                zInput: document.getElementById('z'),
+                redshiftInput: document.getElementById('redshift'),
+                classificationForm: document.getElementById('classificationForm'),
+                generateSampleBtn: document.getElementById('generateSampleBtn'),
+                runDemoBtn: document.getElementById('runDemoBtn'),
+                resultsPanel: document.getElementById('results'),
+                classificationResultsDiv: document.getElementById('classification-results'),
+                cosmicObjectDiv: document.getElementById('cosmic-object'),
+                objectDescriptionDiv: document.getElementById('object-description'),
+                performanceMetricsDiv: document.getElementById('performance-metrics')
+            };
+
+            const DESCRIPTIONS = {
+                'Star': 'A luminous sphere of plasma held together by its own gravity. Stars are the fundamental building blocks of galaxies.',
+                'Galaxy': 'A gravitationally bound system of stars, stellar remnants, interstellar gas, dust, and dark matter.',
+                'Quasar': 'An extremely luminous active galactic nucleus powered by a supermassive black hole.'
+            };
+
+            const CLASSIFICATION_LABELS = ['Star', 'Galaxy', 'Quasar'];
+
+            /**
+             * Simulates a machine learning classifier.
+             * Uses private fields for internal data.
+             */
+            class CosmicClassifier {
+                #models = {
+                    decisionTree: { accuracy: 0.892, name: 'Decision Tree' },
+                    logisticRegression: { accuracy: 0.847, name: 'Logistic Regression' },
+                    knn: { accuracy: 0.823, name: 'K-Nearest Neighbors' }
+                };
+            
+                get models() {
+                    return this.#models;
+                }
+            
+                /**
+                 * Classifies a cosmic object based on input features.
+                 * @param {number[]} features - Array of numerical features.
+                 * @returns {Object} The classification result.
+                 */
+                async classify(features) {
+                    const [ra, dec, u, g, r, i, z, redshift] = features;
+                    
+                    // Simulate a network request delay
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+            
+                    // Simple heuristic-based classification for demo
+                    let predictionIndex = 0; // Star
+                    let confidence = 0.6;
+                    
+                    if (redshift > 0.1 && (g - r) > 1.0) {
+                        predictionIndex = 1; // Galaxy
+                        confidence = 0.8;
+                    }
+                    
+                    if (redshift > 0.5 && (u - g) < 0.5 && Math.abs(i - z) < 0.3) {
+                        predictionIndex = 2; // Quasar
+                        confidence = 0.9;
+                    }
+                    
+                    confidence += (Math.random() - 0.5) * 0.2;
+                    confidence = Math.max(0.5, Math.min(0.99, confidence));
+                    
+                    const probabilities = this.#generateProbabilities(predictionIndex, confidence);
+            
+                    return {
+                        className: CLASSIFICATION_LABELS[predictionIndex],
+                        confidence,
+                        probabilities
+                    };
+                }
+            
+                /**
+                 * Generates mock probabilities for the classification.
+                 * @param {number} truePred - The index of the predicted class.
+                 * @param {number} confidence - The confidence of the prediction.
+                 * @returns {number[]} Array of probabilities.
+                 */
+                #generateProbabilities(truePred, confidence) {
+                    const probs = [0.33, 0.33, 0.34];
+                    probs[truePred] = confidence;
+                    
+                    const remaining = 1 - confidence;
+                    const others = [0, 1, 2].filter(i => i !== truePred);
+                    probs[others[0]] = remaining * Math.random();
+                    probs[others[1]] = remaining - probs[others[0]];
+                    
+                    return probs.map(p => Math.max(0, p)); // Ensure no negative probabilities
+                }
+            }
+            
+            const classifier = new CosmicClassifier();
+
+            /** Creates and appends animated stars to the background. */
+            const createStars = () => {
+                 // The stars are now an animated background in CSS, so this function is not needed.
+            };
+            
+            /** Retrieves numerical values from input fields. */
+            const getInputValues = () => [
+                parseFloat(ELEMENTS.raInput.value) || 0,
+                parseFloat(ELEMENTS.decInput.value) || 0,
+                parseFloat(ELEMENTS.uInput.value) || 0,
+                parseFloat(ELEMENTS.gInput.value) || 0,
+                parseFloat(ELEMENTS.rInput.value) || 0,
+                parseFloat(ELEMENTS.iInput.value) || 0,
+                parseFloat(ELEMENTS.zInput.value) || 0,
+                parseFloat(ELEMENTS.redshiftInput.value) || 0
+            ];
+            
+            /** Displays a loading state while the classifier is running. */
+            const showLoading = () => {
+                ELEMENTS.resultsPanel.style.display = 'block';
+                ELEMENTS.classificationResultsDiv.innerHTML = `
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>ANALYZING COSMIC SIGNATURES...</p>
+                    </div>
+                `;
+                ELEMENTS.cosmicObjectDiv.className = 'cosmic-object';
+                ELEMENTS.objectDescriptionDiv.textContent = '';
+            };
+            
+            /**
+             * Updates the UI with classification results.
+             * @param {Object} result - The result object from the classifier.
+             */
+            const displayResults = (result) => {
+                const { className, confidence, probabilities } = result;
+                
+                ELEMENTS.classificationResultsDiv.innerHTML = `
+                    <div class="result-item ${className.toLowerCase()}">
+                        <h3>PRIMARY CLASSIFICATION: ${className}</h3>
+                        <div class="accuracy">${(confidence * 100).toFixed(1)}%</div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h4 style="color: var(--accent-glow); margin-bottom: 15px; font-family: 'Orbitron', sans-serif;">PROBABILITY DISTRIBUTION</h4>
+                    </div>
+                `;
+                
+                const probDiv = ELEMENTS.classificationResultsDiv.querySelector('div:last-child');
+                CLASSIFICATION_LABELS.forEach((label, index) => {
+                    const probItem = document.createElement('div');
+                    probItem.className = `result-item ${label.toLowerCase()}`;
+                    probItem.innerHTML = `
+                        <span>${label}</span>
+                        <span>${(probabilities[index] * 100).toFixed(1)}%</span>
+                    `;
+                    probDiv.appendChild(probItem);
+                });
+            };
+            
+            /**
+             * Updates the visualization of the cosmic object.
+             * @param {Object} result - The result object from the classifier.
+             */
+            const displayVisualization = (result) => {
+                const { className } = result;
+                ELEMENTS.cosmicObjectDiv.className = `cosmic-object ${className.toLowerCase()}-viz`;
+                ELEMENTS.objectDescriptionDiv.innerHTML = `
+                    <h4 style="color: var(--text-primary); margin-bottom: 10px; font-family: 'Orbitron', sans-serif;">${className}</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6;">${DESCRIPTIONS[className]}</p>
+                `;
+            };
+            
+            /** Populates input fields with sample data. */
+            const generateSample = () => {
+                const samples = {
+                    star: { ra: 180, dec: 45, u: 16.5, g: 15.2, r: 14.8, i: 14.5, z: 14.3, redshift: 0.001 },
+                    galaxy: { ra: 210, dec: 30, u: 19.1, g: 17.5, r: 16.2, i: 15.8, z: 15.5, redshift: 0.25 },
+                    quasar: { ra: 25, dec: -10, u: 17.8, g: 17.9, r: 18.0, i: 17.9, z: 17.8, redshift: 1.5 }
+                };
+            
+                const sampleType = ['star', 'galaxy', 'quasar'][Math.floor(Math.random() * 3)];
+                const sample = samples[sampleType];
+            
+                ELEMENTS.raInput.value = (sample.ra + (Math.random() - 0.5) * 5).toFixed(2);
+                ELEMENTS.decInput.value = (sample.dec + (Math.random() - 0.5) * 5).toFixed(2);
+                ELEMENTS.uInput.value = (sample.u + (Math.random() - 0.5) * 1).toFixed(2);
+                ELEMENTS.gInput.value = (sample.g + (Math.random() - 0.5) * 1).toFixed(2);
+                ELEMENTS.rInput.value = (sample.r + (Math.random() - 0.5) * 1).toFixed(2);
+                ELEMENTS.iInput.value = (sample.i + (Math.random() - 0.5) * 1).toFixed(2);
+                ELEMENTS.zInput.value = (sample.z + (Math.random() - 0.5) * 1).toFixed(2);
+                ELEMENTS.redshiftInput.value = (sample.redshift + (Math.random() - 0.5) * 0.1).toFixed(3);
+            };
+            
+            /** Shows the model performance metrics. */
+            const showPerformanceMetrics = () => {
+                const models = classifier.models;
+                ELEMENTS.performanceMetricsDiv.innerHTML = `
+                    <div class="result-item star">
+                        <span>${models.decisionTree.name}</span>
+                        <span class="accuracy">${(models.decisionTree.accuracy * 100).toFixed(1)}%</span>
+                    </div>
+                    <div class="result-item galaxy">
+                        <span>${models.logisticRegression.name}</span>
+                        <span class="accuracy">${(models.logisticRegression.accuracy * 100).toFixed(1)}%</span>
+                    </div>
+                    <div class="result-item quasar">
+                        <span>${models.knn.name}</span>
+                        <span class="accuracy">${(models.knn.accuracy * 100).toFixed(1)}%</span>
+                    </div>
+                    <div style="margin-top: 20px; padding: 15px; background: rgba(0, 255, 136, 0.1); border-radius: 10px; border-left: 4px solid #00ff88;">
+                        <h4 style="color: #00ff88; font-family: 'Orbitron', sans-serif;">BEST MODEL: ${models.decisionTree.name}</h4>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 5px;">
+                            Optimal performance with ${(models.decisionTree.accuracy * 100).toFixed(1)}% accuracy across 60,000 cosmic objects from SDSS survey
+                        </p>
+                    </div>
+                `;
+            };
+
+            // Main function to handle classification
+            const classifyObject = async (event) => {
+                event.preventDefault();
+                showLoading();
+                const features = getInputValues();
+                const result = await classifier.classify(features);
+                displayResults(result);
+                displayVisualization(result);
+            };
+
+            // Event Listeners
+            ELEMENTS.classificationForm.addEventListener('submit', classifyObject);
+            ELEMENTS.generateSampleBtn.addEventListener('click', generateSample);
+            ELEMENTS.runDemoBtn.addEventListener('click', () => {
+                showPerformanceMetrics();
+                generateSample();
+                setTimeout(() => {
+                    ELEMENTS.classificationForm.dispatchEvent(new Event('submit', { cancelable: true }));
+                }, 500);
+            });
+
+            // Initial setup
+            window.addEventListener('load', () => {
+                createStars();
+                showPerformanceMetrics();
+                generateSample();
+                setTimeout(() => {
+                    ELEMENTS.classificationForm.dispatchEvent(new Event('submit', { cancelable: true }));
+                }, 2000);
+            });
+        })();
+    </script>
+</body>
+</html>
